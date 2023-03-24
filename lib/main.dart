@@ -5,8 +5,7 @@ import 'pages/home.dart';
 void main() => runApp(MaterialApp(
   initialRoute: '/signin',
       routes: {
-        '/signin': (context) => const SignIn(),
+        '/signin': (context) => SignIn(),
         '/': (context) => const Home(),
-        
       },
     ));

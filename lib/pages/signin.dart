@@ -1,27 +1,24 @@
+import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignIn extends StatelessWidget {
+  SignIn({super.key});
 
-  @override
-  State<SignIn> createState() => _SignInState();
-}
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black12,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 220.0, 0.0, 0.0),
-              child: Text(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              const SizedBox(
+                height: 150,
+              ),
+              Text(
                 'WELCOME',
                 style: TextStyle(
                     fontSize: 40.0,
@@ -30,42 +27,37 @@ class _SignInState extends State<SignIn> {
                     color: Colors.orange[200],
                     fontFamily: 'JosefinSans'),
               ),
-            ),
-            Divider(
-              height: 20.0,
-              thickness: 2,
-              color: Colors.orange[200],
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 12.0, 0.0, 0.0),
-              child: Text(
-                'SIGN IN',
-                style: TextStyle(
-                    fontSize: 30.0,
-                    fontFamily: 'JosefinSans',
-                    fontWeight: FontWeight.w200,
-                    color: Colors.white,
-                    letterSpacing: 3.0),
+              Divider(
+                height: 20.0,
+                thickness: 2,
+                color: Colors.orange[200],
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.amber),
-                      borderRadius: BorderRadius.all(Radius.zero)),
-                  labelText: 'Email',
-                  labelStyle: TextStyle(color: Colors.orange[200]),
-                  fillColor: Colors.amber[200],
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 12.0, 0.0, 0.0),
+                child: Text(
+                  'SIGN IN',
+                  style: TextStyle(
+                      fontSize: 30.0,
+                      fontFamily: 'JosefinSans',
+                      fontWeight: FontWeight.w200,
+                      color: Colors.white,
+                      letterSpacing: 3.0),
                 ),
-                style: TextStyle(color: Colors.amber),
               ),
-            ),
-          ],
+              MyTextField(
+                  obscureText: false,
+                  specIcon: Icons.email_sharp,
+                  controller: emailController,
+                  topPadding: 70,
+                  labelText: 'Email'),
+              MyTextField(
+                  obscureText: true,
+                  specIcon: Icons.password_sharp,
+                  controller: passwordController,
+                  topPadding: 20,
+                  labelText: 'Password'),
+            ],
+          ),
         ),
       ),
     );
