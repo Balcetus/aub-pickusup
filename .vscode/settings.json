@@ -1,0 +1,30 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Local instance MySQL80",
+            "database": "world",
+            "username": "root",
+            "password": "groundhogDay.12"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "TestSQL",
+            "database": "carpoolapp",
+            "username": "balcetus",
+            "password": "groundhogDay.12"
+        }
+    ]
+}

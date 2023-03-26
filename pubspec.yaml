@@ -80,6 +80,11 @@ flutter:
         - asset: fonts/JosefinSans-VariableFont_wght.ttf
         - asset: fonts/JosefinSans-Italic-VariableFont_wght.ttf
           style: italic
+    - family: Jost
+      fonts:
+        - asset: fonts/Jost-VariableFont_wght.ttf
+        - asset: fonts/Jost-Italic-VariableFont_wght.ttf
+          style: italic
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
