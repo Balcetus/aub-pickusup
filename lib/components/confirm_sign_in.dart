@@ -7,7 +7,7 @@ class ConfirmSignIn extends StatefulWidget {
   State<ConfirmSignIn> createState() => _ConfirmSignInState();
 }
 
-class _ConfirmSignInState extends State<ConfirmSignIn> {
+class _ConfirmSignInState extends State<ConfirmSignIn> { 
   final double _originalBorderRadius = 8.0;
   double _currentBorderRadius = 8.0;
 
