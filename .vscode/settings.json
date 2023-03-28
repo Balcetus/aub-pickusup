@@ -26,5 +26,6 @@
             "username": "balcetus",
             "password": "groundhogDay.12"
         }
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
