@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MyTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
-  final IconData? specIcon;
-  final controller;
+  final IconData specIcon;
+  final TextEditingController controller1;
 
   const MyTextField(
       {super.key,
       required this.obscureText,
       required this.specIcon,
-      required this.controller,
+      required this.controller1,
       required this.labelText});
 
   @override
@@ -18,8 +19,10 @@ class MyTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       child: TextFormField(
-        controller: controller,
+        controller: controller1,
         obscureText: obscureText,
+        maxLength: obscureText == false ? 18 : null,
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -33,6 +36,7 @@ class MyTextField extends StatelessWidget {
           filled: true,
           labelStyle: TextStyle(color: Colors.orange[200]),
           prefixIcon: Icon(specIcon, color: Colors.white, size: 22),
+          counterText: '',
         ),
         style: const TextStyle(color: Colors.white),
       ),
