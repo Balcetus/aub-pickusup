@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aub_pickusup">
    <application
-        android:label="aub_pickusup"
+        android:label="AUB PickUsUp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

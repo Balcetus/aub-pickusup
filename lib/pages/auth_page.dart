@@ -1,4 +1,5 @@
 import 'package:aub_pickusup/pages/sign_in_page.dart';
+import 'package:aub_pickusup/pages/verify_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_page.dart';
@@ -12,14 +13,20 @@ class AuthPage extends StatelessWidget {
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          //user is logged in
-          if (snapshot.hasData) {
-            return HomePage();
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('An error occurred, please try again later.'),
+            );
           }
-          //user is not logged in
-          else {
-            return const SignInPage();
-          }
+          return Center(
+            child: snapshot.connectionState == ConnectionState.waiting
+                ? CircularProgressIndicator(
+                    backgroundColor: Colors.orange.shade200,
+                  )
+                : snapshot.hasData
+                    ? const VerifyPage()
+                    : const SignInPage(),
+          );
         },
       ),
     );
