@@ -56,7 +56,7 @@ class _VerifyPageState extends State<VerifyPage> {
                   height: 40,
                 ),
                 Text(
-                  'An email has been sent to ${user?.email}, please verify.',
+                  'An email has been sent to ${user?.email}, please verify. If you can\'t find it, check your Junk/Spam folder.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
@@ -67,6 +67,8 @@ class _VerifyPageState extends State<VerifyPage> {
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAuth.instance.signOut();
+                    // Navigator.restorablePushNamedAndRemoveUntil(context, '/signin', (route) => true);
+                    Navigator.pushReplacementNamed(context, '/signin');
                   },
                   style: ButtonStyle(
                       fixedSize:

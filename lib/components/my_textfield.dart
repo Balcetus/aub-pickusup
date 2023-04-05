@@ -15,7 +15,7 @@ class MyTextField extends StatelessWidget {
       required this.specIcon,
       required this.controller1,
       required this.labelText,
-      required this.inputType});
+      this.inputType});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class MyTextField extends StatelessWidget {
         controller: controller1,
         obscureText: obscureText,
         keyboardType: inputType,
-        maxLength: obscureText == false ? 18 : null,
+        maxLength: obscureText == false ? null : null,
         maxLengthEnforcement: MaxLengthEnforcement.enforced,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
@@ -36,7 +36,6 @@ class MyTextField extends StatelessWidget {
             borderSide: BorderSide(color: Colors.white),
           ),
           labelText: labelText,
-          
           fillColor: aubRed,
           filled: true,
           labelStyle: const TextStyle(color: aubGrey),

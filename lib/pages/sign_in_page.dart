@@ -1,9 +1,9 @@
 import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:aub_pickusup/main.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignInPage extends StatefulWidget {
@@ -18,18 +18,7 @@ class _SignInPageState extends State<SignInPage> {
   late final TextEditingController passwordController = TextEditingController();
   late UserCredential credentials;
 
-  Future<void> signUpRequest(BuildContext context) async {
-    // final User? currentFirebaseUser =
-    //     (await _firebaseAuth.createUserWithEmailAndPassword(
-    //             email: emailController.text.trim(),
-    //             password: passwordController.text.trim()))
-    //         .user;
-
-    // if (currentFirebaseUser != null) {
-    // } else {}
-  }
-
-  Future<void> userSignIn() async {
+  Future<void> userSignIn(BuildContext context) async {
     final userEmail = emailController.text.trim();
     final userPassword = passwordController.text.trim();
 
@@ -52,50 +41,73 @@ class _SignInPageState extends State<SignInPage> {
           wrongCredentials();
         } else if (e.code == 'wrong-password') {
           wrongCredentials();
+        } else {
+          Fluttertoast.showToast(msg: e.code.toString());
         }
       }
     }
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     MyTextField passwordTextField = MyTextField(
-        inputType: TextInputType.text,
-        obscureText: true,
-        specIcon: Icons.password_rounded,
-        controller1: passwordController,
-        labelText: 'Password');
+      inputType: TextInputType.text,
+      obscureText: true,
+      specIcon: Icons.password_rounded,
+      controller1: passwordController,
+      labelText: 'Password',
+    );
 
     MyTextField emailTextField = MyTextField(
-        inputType: TextInputType.emailAddress,
-        obscureText: false,
-        specIcon: Icons.email_rounded,
-        controller1: emailController,
-        labelText: 'Email');
+      inputType: TextInputType.emailAddress,
+      obscureText: false,
+      specIcon: Icons.email_rounded,
+      controller1: emailController,
+      labelText: 'Email',
+    );
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: welcomeAppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        toolbarHeight: 200,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25))),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        title: const Text(
+          'SIGN IN',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 48.0,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 10.0,
+            color: aubRed,
+            fontFamily: 'JosefinSans',
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
             height: MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
-                80,
+                200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 120.0, 0.0, 100.0),
-                  child: Text(
-                    'SIGN IN',
-                    style: TextStyle(
-                        fontSize: 30.0,
-                        fontFamily: 'JosefinSans',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 16.0),
-                  ),
+                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 180.0),
                 ),
                 SizedBox(
                   height: 80,
@@ -106,51 +118,49 @@ class _SignInPageState extends State<SignInPage> {
                   child: passwordTextField,
                 ),
                 confirmSignIn(),
-                MaterialButton(
-                  onPressed: () {
-                    FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim())
-                        .then((_) {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/verify', (route) => false);
-                    });
-                  },
-                  color: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                    side: BorderSide(width: 0),
-                  ),
-                  highlightColor: Colors.black,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
-                  child: const Text(
-                    'SignUp',
-                    style: TextStyle(
-                        color: aubRed,
-                        fontSize: 18,
-                        letterSpacing: 10,
-                        fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 160, 0, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'don\'t have an account?',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/register', (route) => false);
+                        },
+                        child: const Text(
+                          'REGISTER',
+                          style: TextStyle(
+                              color: Colors.lightBlue,
+                              fontSize: 16,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 220, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     alignment: Alignment.center,
                     decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25)),
-                      ),
+                      shape: RoundedRectangleBorder(),
                       color: aubRed,
                     ),
                     child: const Text(
-                      'Please log in using your AUBnet Credentials',
-                      style: TextStyle(fontSize: 17),
+                      'Please use your AUBnet Credentials',
+                      style: TextStyle(fontSize: 17, color: aubGrey),
                     ),
                   ),
                 ),
@@ -165,7 +175,11 @@ class _SignInPageState extends State<SignInPage> {
   MaterialButton confirmSignIn() {
     return MaterialButton(
       onPressed: () {
-        userSignIn();
+        // if (emailController.text.trim().substring(5, 18) != '@mail.aub.edu') {
+        //   Fluttertoast.showToast(msg: 'Use an AUBnet email');
+        //   return;
+        // }
+        userSignIn(context);
       },
       color: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -183,29 +197,6 @@ class _SignInPageState extends State<SignInPage> {
             fontSize: 18,
             letterSpacing: 10,
             fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  AppBar welcomeAppBar() {
-    return AppBar(
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      toolbarHeight: 80,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(25))),
-      systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-      title: const Text(
-        'WELCOME',
-        style: TextStyle(
-            fontSize: 40.0,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 16.0,
-            color: aubRed,
-            fontFamily: 'JosefinSans'),
       ),
     );
   }
@@ -233,5 +224,15 @@ class _SignInPageState extends State<SignInPage> {
         );
       },
     );
+  }
+
+  Future<void> signUpRequest(BuildContext context) async {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim())
+        .then((_) {
+      Navigator.pushNamedAndRemoveUntil(context, '/verify', (route) => false);
+    });
   }
 }

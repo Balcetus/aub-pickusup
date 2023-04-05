@@ -6,10 +6,6 @@ class HomePage extends StatelessWidget {
 
   final user = FirebaseAuth.instance.currentUser;
 
-  userSignOut() async {
-    await FirebaseAuth.instance.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +13,8 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              userSignOut();
+              FirebaseAuth.instance.signOut();
+              // Navigator.pushReplacementNamed(context, '/signin');
             },
             icon: const Icon(Icons.logout),
           ),
