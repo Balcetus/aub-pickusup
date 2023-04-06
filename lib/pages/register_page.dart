@@ -1,6 +1,5 @@
 import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:aub_pickusup/main.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -15,11 +14,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late final TextEditingController emailController = TextEditingController();
-  late final TextEditingController passwordController = TextEditingController();
-  late final TextEditingController fullnameController = TextEditingController();
-  late final TextEditingController phoneController = TextEditingController();
+  late TextEditingController emailController = TextEditingController();
+  late TextEditingController passwordController = TextEditingController();
+  late TextEditingController fullnameController = TextEditingController();
+  late TextEditingController phoneController = TextEditingController();
   late UserCredential credentials;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    fullnameController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 80,
                   child: passwordTextField,
                 ),
-                confirmRegister(),
+                confirmRegisterButton(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 80, 0, 10),
                   child: Row(
@@ -157,7 +165,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  MaterialButton confirmRegister() {
+  MaterialButton confirmRegisterButton() {
     return MaterialButton(
       onPressed: () {
         List<String> validationErrors = [];
@@ -180,7 +188,16 @@ class _RegisterPageState extends State<RegisterPage> {
           return;
         }
 
-        registerNewUser(context);
+        showLoadingDialog();
+
+        registerNewUser(
+          emailController.text,
+          passwordController.text,
+          fullnameController.text,
+          phoneController.text,
+          addUserDetails,
+          Navigator.of(context),
+        );
       },
       color: Colors.white,
       shape: const RoundedRectangleBorder(
@@ -213,7 +230,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<dynamic> showLoadingDialog() {
+  showLoadingDialog() {
     return showDialog(
       barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
       barrierDismissible: false,
@@ -227,23 +244,17 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // Future<void> signUpRequest(BuildContext context) async {
-  //   await FirebaseAuth.instance
-  //       .createUserWithEmailAndPassword(
-  //           email: emailController.text.trim(),
-  //           password: passwordController.text.trim())
-  //       .then((_) {
-  //     Navigator.pushNamedAndRemoveUntil(context, '/verify', (route) => false);
-  //   });
-  // }
-
-  Future<void> addUserDetails(BuildContext context) async {
+  Future<void> addUserDetails(
+    String fullname,
+    String email,
+    String phone,
+  ) async {
     try {
       await userRef.add(
         {
-          'fullname': fullnameController.text.trim(),
-          'email': emailController.text.trim(),
-          'phone': phoneController.text.trim(),
+          'fullname': fullname.trim(),
+          'email': email.trim(),
+          'phone': phone.trim(),
         },
       );
     } catch (e) {
@@ -252,18 +263,27 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  Future<void> registerNewUser(BuildContext context) async {
+
+  Future<void> registerNewUser(
+    String email,
+    String password,
+    String fullname,
+    String phone,
+    Future<void> Function(String fullname, String email, String phone)
+        addUserDetails,
+    NavigatorState navigator,
+  ) async {
     try {
       final UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+        email: email.trim(),
+        password: password.trim(),
       );
       final User? firebaseUser = userCredential.user;
       if (firebaseUser != null) {
         Fluttertoast.showToast(msg: 'Account created successfully');
-        await addUserDetails(context);
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        await addUserDetails(fullname, email, phone);
+        navigator.pushReplacementNamed('/home');
       } else {
         Fluttertoast.showToast(msg: 'new user has not been created');
       }

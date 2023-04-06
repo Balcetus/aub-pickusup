@@ -129,7 +129,7 @@ class _SignInPageState extends State<SignInPage> {
                             color: Colors.white,
                             fontSize: 14,
                             letterSpacing: 1,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.normal),
                         textAlign: TextAlign.right,
                       ),
                       TextButton(
@@ -175,10 +175,6 @@ class _SignInPageState extends State<SignInPage> {
   MaterialButton confirmSignIn() {
     return MaterialButton(
       onPressed: () {
-        // if (emailController.text.trim().substring(5, 18) != '@mail.aub.edu') {
-        //   Fluttertoast.showToast(msg: 'Use an AUBnet email');
-        //   return;
-        // }
         userSignIn(context);
       },
       color: Colors.white,
@@ -193,10 +189,11 @@ class _SignInPageState extends State<SignInPage> {
       child: const Text(
         'CONFIRM',
         style: TextStyle(
-            color: aubRed,
-            fontSize: 18,
-            letterSpacing: 10,
-            fontWeight: FontWeight.bold),
+          color: aubRed,
+          fontSize: 18,
+          letterSpacing: 10,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -212,7 +209,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Future<dynamic> showLoadingDialog() {
+  showLoadingDialog() {
     return showDialog(
       barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
       barrierDismissible: false,
@@ -224,15 +221,5 @@ class _SignInPageState extends State<SignInPage> {
         );
       },
     );
-  }
-
-  Future<void> signUpRequest(BuildContext context) async {
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim())
-        .then((_) {
-      Navigator.pushNamedAndRemoveUntil(context, '/verify', (route) => false);
-    });
   }
 }
