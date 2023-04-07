@@ -209,7 +209,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  showLoadingDialog() {
+  Future<dynamic> showLoadingDialog() {
     return showDialog(
       barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
       barrierDismissible: false,
