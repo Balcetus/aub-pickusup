@@ -1,3 +1,4 @@
+import 'package:aub_pickusup/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,13 +7,15 @@ class MyTextField extends StatelessWidget {
   final bool obscureText;
   final IconData specIcon;
   final TextEditingController controller1;
+  final TextInputType? inputType;
 
   const MyTextField(
       {super.key,
       required this.obscureText,
       required this.specIcon,
       required this.controller1,
-      required this.labelText});
+      required this.labelText,
+      this.inputType});
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +24,21 @@ class MyTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller1,
         obscureText: obscureText,
-        maxLength: obscureText == false ? 18 : null,
+        keyboardType: inputType,
+        maxLength: obscureText == false ? null : null,
         maxLengthEnforcement: MaxLengthEnforcement.enforced,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(Radius.circular(25)),
-            borderSide: BorderSide(color: Colors.orange.shade200),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderSide: BorderSide(color: Colors.white),
           ),
           labelText: labelText,
-          fillColor: Colors.grey[900],
+          fillColor: aubRed,
           filled: true,
-          labelStyle: TextStyle(color: Colors.orange[200]),
+          labelStyle: const TextStyle(color: aubGrey),
           prefixIcon: Icon(specIcon, color: Colors.white, size: 22),
           counterText: '',
         ),

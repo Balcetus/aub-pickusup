@@ -1,6 +1,9 @@
 import 'package:aub_pickusup/components/my_textfield.dart';
+import 'package:aub_pickusup/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignInPage extends StatefulWidget {
@@ -11,144 +14,154 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  late final emailController = TextEditingController();
-  late final passwordController = TextEditingController();
+  late final TextEditingController emailController = TextEditingController();
+  late final TextEditingController passwordController = TextEditingController();
+  late UserCredential credentials;
 
-  void userSignIn() async {
+  Future<void> userSignIn(BuildContext context) async {
     final userEmail = emailController.text.trim();
     final userPassword = passwordController.text.trim();
 
-    showLoadingDialog();
+    if (userEmail.isNotEmpty && userPassword.isNotEmpty) {
+      // show loading dialog
+      showLoadingDialog();
 
-    // show loading dialog
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: userEmail, password: userPassword);
-      if (mounted) {
+      try {
+        credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: userEmail, password: userPassword);
+        if (mounted) {
+          Navigator.pop(context);
+        } else {
+          return;
+        }
+        // Do something with credentials
+      } on FirebaseAuthException catch (e) {
         Navigator.pop(context);
-      } else {
-        return;
-      }
-
-      // Do something with credentials
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      if (e.code == 'user-not-found') {
-        wrongCredentials();
-      } else if (e.code == 'wrong-password') {
-        wrongCredentials();
-      } else {
-        await Navigator.pushNamedAndRemoveUntil(
-            context, '/signin', (route) => false);
+        if (e.code == 'user-not-found') {
+          wrongCredentials();
+        } else if (e.code == 'wrong-password') {
+          wrongCredentials();
+        } else {
+          Fluttertoast.showToast(msg: e.code.toString());
+        }
       }
     }
   }
 
-  Future<dynamic> showLoadingDialog() {
-    return showDialog(
-      barrierColor: Colors.black,
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return Center(
-          child: LoadingAnimationWidget.twistingDots(
-              leftDotColor: Colors.orange.shade200,
-              rightDotColor: Colors.white,
-              size: 80),
-        );
-      },
-    );
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var credentials;
+    MyTextField passwordTextField = MyTextField(
+      inputType: TextInputType.text,
+      obscureText: true,
+      specIcon: Icons.password_rounded,
+      controller1: passwordController,
+      labelText: 'Password',
+    );
+
+    MyTextField emailTextField = MyTextField(
+      inputType: TextInputType.emailAddress,
+      obscureText: false,
+      specIcon: Icons.email_rounded,
+      controller1: emailController,
+      labelText: 'Email',
+    );
 
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        toolbarHeight: 200,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(25))),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        title: const Text(
+          'SIGN IN',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 48.0,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 10.0,
+            color: aubRed,
+            fontFamily: 'JosefinSans',
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
             height: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).padding.top,
+                MediaQuery.of(context).padding.top -
+                200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(
-                  height: 50,
-                ),
-                Text(
-                  'WELCOME',
-                  style: TextStyle(
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 16.0,
-                      color: Colors.orange[200],
-                      fontFamily: 'JosefinSans'),
-                ),
-                Divider(
-                  height: 20.0,
-                  thickness: 2,
-                  color: Colors.orange[200],
-                ),
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 110.0, 0.0, 110.0),
-                  child: Text(
-                    'SIGN IN',
-                    style: TextStyle(
-                        fontSize: 30.0,
-                        fontFamily: 'JosefinSans',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 8.0),
-                  ),
+                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 180.0),
                 ),
                 SizedBox(
                   height: 80,
-                  child: MyTextField(
-                      obscureText: false,
-                      specIcon: Icons.email_rounded,
-                      controller1: emailController,
-                      labelText: 'Email'),
+                  child: emailTextField,
                 ),
                 SizedBox(
                   height: 80,
-                  child: MyTextField(
-                      obscureText: true,
-                      specIcon: Icons.password_rounded,
-                      controller1: passwordController,
-                      labelText: 'Password'),
+                  child: passwordTextField,
                 ),
-                MaterialButton(
-                  onPressed: () {
-                    userSignIn();
-                  },
-                  color: Colors.orange[200],
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  highlightColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
-                  child: const Text(
-                    'CONFIRM',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        letterSpacing: 10,
-                        fontWeight: FontWeight.bold),
+                confirmSignIn(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 160, 0, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'don\'t have an account?',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.right,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/register', (route) => false);
+                        },
+                        child: const Text(
+                          'REGISTER',
+                          style: TextStyle(
+                              color: Colors.lightBlue,
+                              fontSize: 16,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 220, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     alignment: Alignment.center,
-                    color: Colors.grey.shade900,
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(),
+                      color: aubRed,
+                    ),
                     child: const Text(
-                        'Please log in using your AUBnet Credentials',
-                        style: TextStyle(fontSize: 16)),
+                      'Please use your AUBnet Credentials',
+                      style: TextStyle(fontSize: 17, color: aubGrey),
+                    ),
                   ),
                 ),
               ],
@@ -159,7 +172,31 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void signUpRequest() {}
+  MaterialButton confirmSignIn() {
+    return MaterialButton(
+      onPressed: () {
+        userSignIn(context);
+      },
+      color: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(8),
+        ),
+        side: BorderSide(width: 0),
+      ),
+      highlightColor: Colors.black,
+      padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
+      child: const Text(
+        'CONFIRM',
+        style: TextStyle(
+          color: aubRed,
+          fontSize: 18,
+          letterSpacing: 10,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 
   void wrongCredentials() {
     showDialog(
@@ -167,6 +204,20 @@ class _SignInPageState extends State<SignInPage> {
       builder: (context) {
         return const AlertDialog(
           title: Text('Incorrect Credentials'),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> showLoadingDialog() {
+    return showDialog(
+      barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Center(
+          child: LoadingAnimationWidget.twistingDots(
+              leftDotColor: aubRed, rightDotColor: Colors.white, size: 80),
         );
       },
     );
