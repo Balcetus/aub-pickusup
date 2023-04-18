@@ -46,7 +46,7 @@ class _DriverscreenState extends State<Driverscreen> {
   var uuid = Uuid();
   String _sessionToken="12345";
   List<dynamic> _placesList=[];//placesList list is initialized to an empty list to store the suggestions returned by the Google Places API.
-  String UserId='';
+  
 
   @override
   void initState(){// to initialize the _controller and set a listener on it to call onChange when the text changes.
@@ -171,7 +171,7 @@ void getSuggesion(String input) async{
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => RideInfoScreen(
-                                         placeName: name, latitude: latitude, longitude: longitude, userId:UserId ,
+                                         placeName: name, latitude: latitude, longitude: longitude, userId:userId ,
                                       ),
                                     ),
                                   );
