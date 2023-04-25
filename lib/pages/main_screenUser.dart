@@ -125,7 +125,7 @@ class _mainScreenUserState extends State<mainScreenUser > {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UserScreen(userId: '',)),
+                    MaterialPageRoute(builder: (context) => RidesList(userId: '',)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
