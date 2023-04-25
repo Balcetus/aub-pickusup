@@ -8,10 +8,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // which displays a list of rides retrieved from a Firestore database.
 
 
-class UserScreen extends StatelessWidget {
+class RidesList extends StatelessWidget {
   final String userId;
-//The UserScreen widget takes a required parameter called userId of type String, which is not used in this code snippet.
-  UserScreen({required this.userId});
+//The RidesList widget takes a required parameter called userId of type String, which is not used in this code snippet.
+ RidesList({required this.userId});
 
 
 
