@@ -40,7 +40,13 @@ class UserScreen extends StatelessWidget {
               final ride = filteredRides[index];
               return ListTile(
                 title: Text(ride['placeName']),
-                subtitle: Text('${ride['numberOfPassengers']} passengers'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${ride['numberOfPassengers']} passengers'),
+                    Text('Phone: ${ride['phoneNumber']}'),
+                  ],
+                ),
                 trailing: Text(ride['rideTime']),
               );
             },
