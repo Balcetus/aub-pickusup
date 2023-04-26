@@ -16,7 +16,7 @@ class _mainScreenUserState extends State<mainScreenUser > {
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
 
   CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(33.6887475 ,35.4430696), // initialize with default value
+    target: LatLng(33.89971809068136, 35.48022013654691), // initialize with default value
     zoom: 15,
   );
 
@@ -41,7 +41,7 @@ class _mainScreenUserState extends State<mainScreenUser > {
         _list = [
           Marker(
             markerId: MarkerId('1'),
-            position: LatLng(position.latitude, position.longitude),
+            position: LatLng(33.89971809068136, 35.48022013654691),
             infoWindow: InfoWindow(
               title: 'my location',
             ),
