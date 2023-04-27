@@ -14,6 +14,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final _formkey = GlobalKey<FormState>();
   late final TextEditingController emailController = TextEditingController();
   late final TextEditingController passwordController = TextEditingController();
   late UserCredential credentials;
@@ -27,23 +28,30 @@ class _SignInPageState extends State<SignInPage> {
       showLoadingDialog();
 
       try {
-        credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: userEmail, password: userPassword);
-        if (mounted) {
+        final credentials = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: userEmail, password: userPassword);
+
+        if (credentials.user?.emailVerified == true) {
           Navigator.pop(context);
         } else {
-          return;
+          // show error message if email is not verified
+          Fluttertoast.showToast(msg: 'Email not verified');
         }
-        // Do something with credentials
       } on FirebaseAuthException catch (e) {
         Navigator.pop(context);
+
         if (e.code == 'user-not-found') {
-          wrongCredentials();
+          Fluttertoast.showToast(msg: e.code.toString());
         } else if (e.code == 'wrong-password') {
-          wrongCredentials();
+          Fluttertoast.showToast(msg: e.code.toString());
         } else {
           Fluttertoast.showToast(msg: e.code.toString());
         }
+      } on Exception catch (e) {
+        Navigator.pop(context);
+        // handle other exceptions
+        Fluttertoast.showToast(msg: e.toString());
       }
     }
   }
@@ -57,33 +65,55 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    MyTextField passwordTextField = MyTextField(
+    MyTextFormField passwordTextField = MyTextFormField(
       inputType: TextInputType.text,
       obscureText: true,
       specIcon: Icons.password_rounded,
       controller1: passwordController,
       labelText: 'Password',
+      validatorCustom: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your Password';
+        }
+        if (value.toString().trim().length < 7) {
+          return 'Password must be at least 7 characters';
+        }
+        return null;
+      },
     );
 
-    MyTextField emailTextField = MyTextField(
+    MyTextFormField emailTextField = MyTextFormField(
       inputType: TextInputType.emailAddress,
       obscureText: false,
       specIcon: Icons.email_rounded,
       controller1: emailController,
       labelText: 'Email',
+      validatorCustom: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your Email';
+        } else if (!value.toString().trim().endsWith('@mail.aub.edu')) {
+          return 'Email must end with @mail.aub.edu';
+        }
+        return null;
+      },
     );
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
-        toolbarHeight: 200,
+        backgroundColor: aubRed,
+        elevation: 5,
+        toolbarHeight: 150,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25))),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.elliptical(70, 40),
+            bottomRight: Radius.elliptical(70, 40),
+          ),
+        ),
         systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: aubRed,
+          statusBarIconBrightness: Brightness.light,
         ),
         title: const Text(
           'SIGN IN',
@@ -92,45 +122,45 @@ class _SignInPageState extends State<SignInPage> {
             fontSize: 48.0,
             fontWeight: FontWeight.w900,
             letterSpacing: 10.0,
-            color: aubRed,
+            color: Colors.white,
             fontFamily: 'JosefinSans',
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).padding.top -
-                200,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height -
+              MediaQuery.of(context).padding.top -
+              150,
+          child: Form(
+            key: _formkey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 180.0),
+                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 30.0),
                 ),
-                SizedBox(
-                  height: 80,
-                  child: emailTextField,
+                emailTextField,
+                const SizedBox(
+                  height: 10,
                 ),
-                SizedBox(
-                  height: 80,
-                  child: passwordTextField,
+                passwordTextField,
+                const SizedBox(
+                  height: 10,
                 ),
                 confirmSignIn(),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 160, 0, 10),
+                  padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'don\'t have an account?',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontSize: 14,
                             letterSpacing: 1,
                             fontWeight: FontWeight.normal),
-                        textAlign: TextAlign.right,
                       ),
                       TextButton(
                         onPressed: () {
@@ -140,28 +170,13 @@ class _SignInPageState extends State<SignInPage> {
                         child: const Text(
                           'REGISTER',
                           style: TextStyle(
-                              color: Colors.lightBlue,
-                              fontSize: 16,
-                              letterSpacing: 2,
+                              color: aubBlue,
+                              fontSize: 18,
+                              letterSpacing: 1,
                               fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.right,
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    alignment: Alignment.center,
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(),
-                      color: aubRed,
-                    ),
-                    child: const Text(
-                      'Please use your AUBnet Credentials',
-                      style: TextStyle(fontSize: 17, color: aubGrey),
-                    ),
                   ),
                 ),
               ],
@@ -174,18 +189,24 @@ class _SignInPageState extends State<SignInPage> {
 
   MaterialButton confirmSignIn() {
     return MaterialButton(
+      elevation: 3,
       onPressed: () {
-        userSignIn(context);
+        if (_formkey.currentState!.validate()) {
+          userSignIn(context);
+        }
       },
       color: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(8),
         ),
-        side: BorderSide(width: 0),
+        side: BorderSide(
+          width: 0,
+          color: Colors.white,
+        ),
       ),
       highlightColor: Colors.black,
-      padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 43, vertical: 15),
       child: const Text(
         'CONFIRM',
         style: TextStyle(
@@ -198,26 +219,37 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void wrongCredentials() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Credentials'),
-        );
-      },
-    );
-  }
-
   Future<dynamic> showLoadingDialog() {
     return showDialog(
-      barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
+      barrierColor: aubRed,
       barrierDismissible: false,
       context: context,
       builder: (context) {
         return Center(
-          child: LoadingAnimationWidget.twistingDots(
-              leftDotColor: aubRed, rightDotColor: Colors.white, size: 80),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              LoadingAnimationWidget.halfTriangleDot(
+                color: Colors.white,
+                size: 60,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text(
+                'SIGNING IN',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         );
       },
     );

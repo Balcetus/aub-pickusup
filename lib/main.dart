@@ -2,7 +2,6 @@ import 'package:aub_pickusup/pages/auth_page.dart';
 import 'package:aub_pickusup/pages/home_page.dart';
 import 'package:aub_pickusup/pages/register_page.dart';
 import 'package:aub_pickusup/pages/sign_in_page.dart';
-import 'package:aub_pickusup/pages/verify_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,8 +9,9 @@ import 'firebase_options.dart';
 
 const Color aubRed = Color.fromRGBO(106, 19, 44, 1);
 const Color aubGrey = Color.fromRGBO(197, 197, 197, 1);
+const Color aubBlue = Color.fromRGBO(58, 136, 198, 1);
 final FirebaseFirestore db = FirebaseFirestore.instance;
-final userRef = db.collection('users');
+final CollectionReference userDataRef = db.collection('users');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +34,7 @@ class AUBPickUsUp extends StatelessWidget {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       fontFamily: 'Jost',
       colorScheme: const ColorScheme(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           primary: Colors.white,
           onPrimary: aubRed,
           secondary: aubRed,
@@ -56,7 +56,6 @@ class AUBPickUsUp extends StatelessWidget {
         '/': (context) => const AuthPage(),
         '/home': (context) => HomePage(),
         '/signin': (context) => const SignInPage(),
-        '/verify': (context) => const VerifyPage(),
         '/register': (context) => const RegisterPage(),
       },
     );

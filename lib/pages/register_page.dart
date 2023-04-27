@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:aub_pickusup/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -14,10 +17,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  late TextEditingController emailController = TextEditingController();
-  late TextEditingController passwordController = TextEditingController();
-  late TextEditingController fullnameController = TextEditingController();
-  late TextEditingController phoneController = TextEditingController();
+  final _formkey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController fullnameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   late UserCredential credentials;
 
   @override
@@ -31,45 +35,90 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    MyTextField passwordTextField = MyTextField(
-        inputType: TextInputType.text,
-        obscureText: true,
-        specIcon: Icons.password_rounded,
-        controller1: passwordController,
-        labelText: 'Password');
+    MyTextFormField passwordTextField = MyTextFormField(
+      inputType: TextInputType.text,
+      obscureText: true,
+      specIcon: Icons.password_rounded,
+      controller1: passwordController,
+      labelText: 'Password',
+      validatorCustom: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your Password';
+        }
+        if (value.toString().trim().length < 7) {
+          return 'Password must be at least 7 characters';
+        }
+        return null;
+      },
+    );
 
-    MyTextField emailTextField = MyTextField(
-        inputType: TextInputType.emailAddress,
-        obscureText: false,
-        specIcon: Icons.email_rounded,
-        controller1: emailController,
-        labelText: 'Email');
+    MyTextFormField emailTextField = MyTextFormField(
+      inputType: TextInputType.emailAddress,
+      obscureText: false,
+      specIcon: Icons.email_rounded,
+      controller1: emailController,
+      labelText: 'Email',
+      validatorCustom: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your Email';
+        } else if (!value.toString().trim().endsWith('@mail.aub.edu')) {
+          return 'Email must end with @mail.aub.edu';
+        }
+        return null;
+      },
+    );
 
-    MyTextField fullnameTextField = MyTextField(
-        inputType: TextInputType.name,
-        obscureText: false,
-        specIcon: Icons.person_2_rounded,
-        controller1: fullnameController,
-        labelText: 'Full Name');
+    MyTextFormField fullnameTextField = MyTextFormField(
+      inputType: TextInputType.name,
+      obscureText: false,
+      specIcon: Icons.person_2_rounded,
+      controller1: fullnameController,
+      labelText: 'Full Name',
+      validatorCustom: (value) {
+        if (value.toString().isEmpty) {
+          return 'Please enter your Name';
+        } else if (value.toString().length < 5) {
+          return 'Name must be more than 5 characters';
+        } else if (!value.toString().trim().contains(' ')) {
+          return 'Please write your Full name';
+        }
+        return null;
+      },
+    );
 
-    MyTextField phoneTextField = MyTextField(
-        inputType: TextInputType.phone,
-        obscureText: false,
-        specIcon: Icons.phone_rounded,
-        controller1: phoneController,
-        labelText: 'Phone Number');
+    MyTextFormField phoneTextField = MyTextFormField(
+      inputType: TextInputType.phone,
+      obscureText: false,
+      specIcon: Icons.phone_rounded,
+      controller1: phoneController,
+      labelText: 'Phone Number',
+      validatorCustom: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your Phone Number';
+        }
+        if (value.toString().trim().replaceAll(' ', '').length != 8) {
+          return 'Please enter your Lebanese phone number';
+        }
+        return null;
+      },
+    );
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 5,
         centerTitle: true,
-        backgroundColor: Colors.white,
-        toolbarHeight: 200,
+        backgroundColor: aubRed,
+        toolbarHeight: 150,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25))),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.elliptical(70, 40),
+            bottomRight: Radius.elliptical(70, 40),
+          ),
+        ),
         systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: aubRed,
+          statusBarIconBrightness: Brightness.light,
         ),
         title: const Text(
           'REGISTER',
@@ -78,52 +127,54 @@ class _RegisterPageState extends State<RegisterPage> {
               fontSize: 48.0,
               fontWeight: FontWeight.w900,
               letterSpacing: 10.0,
-              color: aubRed,
+              color: Colors.white,
               fontFamily: 'JosefinSans'),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).padding.top -
-                200,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height -
+              MediaQuery.of(context).padding.top -
+              150,
+          child: Form(
+            key: _formkey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 100.0),
+                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 30.0),
                 ),
-                SizedBox(
-                  height: 80,
-                  child: fullnameTextField,
+                fullnameTextField,
+                const SizedBox(
+                  height: 15,
                 ),
-                SizedBox(
-                  height: 80,
-                  child: phoneTextField,
+                phoneTextField,
+                const SizedBox(
+                  height: 15,
                 ),
-                SizedBox(
-                  height: 80,
-                  child: emailTextField,
+                emailTextField,
+                const SizedBox(
+                  height: 15,
                 ),
-                SizedBox(
-                  height: 80,
-                  child: passwordTextField,
+                passwordTextField,
+                const SizedBox(
+                  height: 15,
                 ),
-                confirmRegisterButton(),
+                confirmRegisterButton(context),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 80, 0, 10),
+                  padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      const Text('already have an account? ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          textAlign: TextAlign.right),
+                      const Text(
+                        'already have an account?',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamedAndRemoveUntil(
@@ -132,29 +183,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: const Text(
                           'SIGN IN',
                           style: TextStyle(
-                            color: Colors.lightBlue,
-                            fontSize: 16,
-                            letterSpacing: 2,
+                            color: aubBlue,
+                            fontSize: 18,
+                            letterSpacing: 1,
                             fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.right,
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    alignment: Alignment.center,
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(),
-                      color: aubRed,
-                    ),
-                    child: const Text(
-                      'Please use your AUBnet Credentials',
-                      style: TextStyle(fontSize: 17, color: aubGrey),
-                    ),
                   ),
                 ),
               ],
@@ -165,49 +201,34 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  MaterialButton confirmRegisterButton() {
+  MaterialButton confirmRegisterButton(BuildContext context) {
     return MaterialButton(
       onPressed: () {
-        List<String> validationErrors = [];
-
-        if (fullnameController.text.length < 5) {
-          validationErrors.add('Name must be at least 5 characters');
+        if (_formkey.currentState!.validate()) {
+          // showLoadingDialog();
+          registerNewUser(
+            email: emailController.text,
+            password: passwordController.text,
+            fullname: fullnameController.text,
+            phone: phoneController.text,
+            addUserDetails: addUserDetails,
+            navigator: Navigator.of(context),
+          );
         }
-        if (!emailController.text.trim().endsWith('@mail.aub.edu')) {
-          validationErrors.add('Email must end with @mail.aub.edu');
-        }
-        if (phoneController.text.isEmpty) {
-          validationErrors.add('Phone number is mandatory');
-        }
-        if (passwordController.text.trim().length < 6) {
-          validationErrors.add('Password must be at least 6 characters');
-        }
-
-        if (validationErrors.isNotEmpty) {
-          Fluttertoast.showToast(msg: validationErrors.join('\n'));
-          return;
-        }
-
-        showLoadingDialog();
-
-        registerNewUser(
-          emailController.text,
-          passwordController.text,
-          fullnameController.text,
-          phoneController.text,
-          addUserDetails,
-          Navigator.of(context),
-        );
       },
       color: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(8),
         ),
-        side: BorderSide(width: 0),
+        side: BorderSide(
+          width: 0,
+          color: Colors.white,
+        ),
       ),
       highlightColor: Colors.black,
-      padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
+      elevation: 3,
+      padding: const EdgeInsets.symmetric(horizontal: 43, vertical: 15),
       child: const Text(
         'CONFIRM',
         style: TextStyle(
@@ -219,44 +240,24 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void wrongCredentials() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Credentials'),
-        );
-      },
-    );
-  }
-
-  Future<dynamic> showLoadingDialog() {
-    return showDialog(
-      barrierColor: const Color.fromRGBO(0, 0, 0, 0.9),
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return Center(
-          child: LoadingAnimationWidget.twistingDots(
-              leftDotColor: aubRed, rightDotColor: Colors.white, size: 80),
-        );
-      },
-    );
-  }
-
   Future<void> addUserDetails(
     String fullname,
     String email,
     String phone,
   ) async {
     try {
-      await userRef.add(
-        {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final userDoc = userDataRef.doc(currentUser.uid);
+        final userSubcollection = userDoc.collection('details');
+        await userSubcollection.add({
           'fullname': fullname.trim(),
           'email': email.trim(),
           'phone': phone.trim(),
-        },
-      );
+        });
+      } else {
+        throw Exception('Current user not found');
+      }
     } catch (e) {
       throw Exception('Failed to add user details: $e');
     }
@@ -264,15 +265,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> registerNewUser(
-    String email,
-    String password,
-    String fullname,
-    String phone,
-    Future<void> Function(String fullname, String email, String phone)
+  Future<void> registerNewUser({
+    required String email,
+    required String password,
+    required String fullname,
+    required String phone,
+    required Future<void> Function(String fullname, String email, String phone)
         addUserDetails,
-    NavigatorState navigator,
-  ) async {
+    required NavigatorState navigator,
+  }) async {
     try {
       final UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -281,15 +282,121 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       final User? firebaseUser = userCredential.user;
       if (firebaseUser != null) {
-        Fluttertoast.showToast(msg: 'Account created successfully');
+        await firebaseUser.sendEmailVerification();
+        // Show pop-up with loading widget
+        await showDialog(
+          context: navigator.context,
+          barrierColor: aubRed,
+          barrierDismissible: false,
+          builder: (_) => const VerifyEmailDialog(),
+        );
+
+        // Add user details to Firestore
         await addUserDetails(fullname, email, phone);
-        navigator.pushReplacementNamed('/home');
+
+        Fluttertoast.showToast(msg: 'Account created successfully');
+
+        // Wait for Firestore operation to complete before navigating to home screen
+        await Navigator.of(navigator.context)
+            .pushNamedAndRemoveUntil('/home', (route) => false);
       } else {
-        Fluttertoast.showToast(msg: 'new user has not been created');
+        Fluttertoast.showToast(msg: 'New user has not been created');
       }
     } catch (e) {
       Fluttertoast.showToast(msg: 'Error: $e');
       rethrow;
+    } finally {
+      // Dismiss loading widget
+      Navigator.of(navigator.context, rootNavigator: true).pop();
+
+      // Check if dialog is still open, if it is, cancel registration process
+      if (Navigator.of(navigator.context, rootNavigator: true).canPop()) {
+        await _firebaseAuth.currentUser?.delete();
+        Fluttertoast.showToast(msg: 'Registration canceled');
+      }
     }
+  }
+}
+
+class VerifyEmailDialog extends StatefulWidget {
+  const VerifyEmailDialog({Key? key}) : super(key: key);
+
+  @override
+  State<VerifyEmailDialog> createState() => _VerifyEmailDialogState();
+}
+
+class _VerifyEmailDialogState extends State<VerifyEmailDialog> {
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      checkIfEmailVerified();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void checkIfEmailVerified() async {
+    final User user = FirebaseAuth.instance.currentUser!;
+    await user.reload();
+    if (user.emailVerified) {
+      Fluttertoast.showToast(msg: 'Email Verified!');
+      Navigator.of(context).pop();
+      _timer.cancel();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String? userEmailText =
+        FirebaseAuth.instance.currentUser?.email.toString().trim();
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          LoadingAnimationWidget.halfTriangleDot(
+            color: Colors.white,
+            size: 60,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(60, 40, 60, 0),
+            child: Column(
+              children: [
+                const Text(
+                  'A verification email has been sent to',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.w100,
+                    letterSpacing: 1,
+                    height: 2,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  '$userEmailText',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                    height: 2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
