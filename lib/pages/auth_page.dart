@@ -2,6 +2,7 @@ import 'package:aub_pickusup/pages/home_page.dart';
 import 'package:aub_pickusup/pages/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData &&
               FirebaseAuth.instance.currentUser!.emailVerified) {
+            Fluttertoast.showToast(msg: 'Signed in Successfully');
             return HomePage();
           } else {
             return const SignInPage();

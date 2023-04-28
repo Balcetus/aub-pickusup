@@ -138,7 +138,7 @@ class _SignInPageState extends State<SignInPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 30.0),
+                  padding: EdgeInsets.fromLTRB(0, 0.0, 0.0, 120.0),
                 ),
                 emailTextField,
                 const SizedBox(
@@ -150,7 +150,7 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 confirmSignIn(),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 90, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 130, 0, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
