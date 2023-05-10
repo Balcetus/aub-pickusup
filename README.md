@@ -1,4 +1,4 @@
-# aub_pickusup
+# AUB PickUsUp
 
 A carpooling app made for AUB students
 
