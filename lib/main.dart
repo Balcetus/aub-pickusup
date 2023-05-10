@@ -14,6 +14,7 @@ import 'firebase_options.dart';
 const Color aubRed = Color.fromRGBO(106, 19, 44, 1);
 const Color aubGrey = Color.fromRGBO(197, 197, 197, 1);
 const Color aubBlue = Color.fromRGBO(58, 136, 198, 1);
+
 final FirebaseFirestore db = FirebaseFirestore.instance;
 final CollectionReference userCollectRef = db.collection('users');
 User? user = FirebaseAuth.instance.currentUser;
@@ -66,7 +67,7 @@ class AUBPickUsUp extends StatelessWidget {
         '/signin': (context) => const SignInPage(),
         '/register': (context) => const RegisterPage(),
         '/rider': (context) => const MainScreenRider(),
-        '/profile': (context) => ProfilePage(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }

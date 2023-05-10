@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:aub_pickusup/main.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +26,7 @@ class _SignInPageState extends State<SignInPage> {
     final userPassword = passwordController.text.trim();
 
     if (userEmail.isNotEmpty && userPassword.isNotEmpty) {
-      // show loading dialog
       showLoadingDialog();
-
       try {
         final credentials = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
@@ -34,6 +34,8 @@ class _SignInPageState extends State<SignInPage> {
 
         if (credentials.user?.emailVerified == true) {
           Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/choose_type', (route) => false);
         } else {
           // show error message if email is not verified
           Fluttertoast.showToast(msg: 'Email not verified');
@@ -50,7 +52,6 @@ class _SignInPageState extends State<SignInPage> {
         }
       } on Exception catch (e) {
         Navigator.pop(context);
-        // handle other exceptions
         Fluttertoast.showToast(msg: e.toString());
       }
     }
@@ -101,6 +102,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: null,
         centerTitle: true,
         backgroundColor: aubRed,
         elevation: 5,

@@ -5,22 +5,33 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
+
+  @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
+  late Stream<User?> _authStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _authStream = FirebaseAuth.instance.authStateChanges();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
+        stream: _authStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show a loading indicator if the stream is still loading
             return const CircularProgressIndicator();
           } else if (snapshot.hasData) {
             final user = snapshot.data!;
             if (user.emailVerified) {
-              // Check if the user ID exists in the database
               return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
@@ -28,7 +39,6 @@ class AuthPage extends StatelessWidget {
                     .snapshots(),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
-                    // Show a loading indicator if the user snapshot is still loading
                     return const CircularProgressIndicator();
                   } else if (userSnapshot.hasData &&
                       userSnapshot.data!.exists) {
@@ -37,17 +47,17 @@ class AuthPage extends StatelessWidget {
                     );
                     return const ChooseUserType();
                   } else {
-                    // User doesn't exist anymore, sign out
                     FirebaseAuth.instance.signOut();
-                    return const SignInPage();
+                    return const SignInPage(); // Display the sign-in page
                   }
                 },
               );
+            } else {
+              FirebaseAuth.instance.signOut();
+              return const SignInPage(); // Display the sign-in page
             }
           }
-
-          // Default to the sign-in page
-          return const SignInPage();
+          return const SignInPage(); // Display the sign-in page
         },
       ),
     );

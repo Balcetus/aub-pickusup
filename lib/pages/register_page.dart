@@ -106,6 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: null,
         elevation: 5,
         centerTitle: true,
         backgroundColor: aubRed,

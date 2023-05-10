@@ -37,6 +37,7 @@ class ChooseUserType extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: null,
         elevation: 5,
         centerTitle: true,
         backgroundColor: aubRed,
@@ -67,13 +68,15 @@ class ChooseUserType extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InkWell(
+            InkResponse(
+              highlightColor: aubRed,
+              highlightShape: BoxShape.rectangle,
               onTap: () async {
                 await setUserRole('rider');
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionDuration: const Duration(milliseconds: 300),
                     pageBuilder: (_, __, ___) => const MainScreenRider(),
                     transitionsBuilder: (_, animation, __, child) {
                       return ScaleTransition(
@@ -132,13 +135,15 @@ class ChooseUserType extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 45.0),
-            InkWell(
+            InkResponse(
+              highlightColor: aubBlue,
+              highlightShape: BoxShape.rectangle,
               onTap: () async {
                 await setUserRole("driver");
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionDuration: const Duration(milliseconds: 300),
                     pageBuilder: (_, __, ___) => const MainScreenDriver(),
                     transitionsBuilder: (_, animation, __, child) {
                       return ScaleTransition(

@@ -1,7 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../main.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -21,26 +22,8 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: true,
         backgroundColor: aubRed,
         elevation: 5,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-          size: 25,
-        ),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 15),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-          ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: aubRed,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
+        leading: null,
+        automaticallyImplyLeading: false,
         toolbarHeight: 150,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -52,25 +35,41 @@ class _ProfilePageState extends State<ProfilePage> {
           statusBarColor: aubRed,
           statusBarIconBrightness: Brightness.light,
         ),
-        title: const Text(
-          'PROFILE',
-          style: TextStyle(
-            fontSize: 48.0,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 10.0,
-            color: Colors.white,
-            fontFamily: 'JosefinSans',
+        title: const Padding(
+          padding: EdgeInsets.only(left: 12.0),
+          child: Text(
+            'PROFILE',
+            style: TextStyle(
+              fontSize: 48.0,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 10.0,
+              color: Colors.white,
+              fontFamily: 'JosefinSans',
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const CircleAvatar(
-              backgroundColor: Colors.white,
-              foregroundImage: AssetImage('assets/logo.png'),
-              radius: 50,
+            const SizedBox(
+              height: 50,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: aubRed,
+                  width: 4.0,
+                ),
+              ),
+              child: const CircleAvatar(
+                backgroundColor: Colors.white,
+                foregroundImage: AssetImage('assets/logo.png'),
+                radius: 50,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
@@ -96,12 +95,11 @@ class _ProfilePageState extends State<ProfilePage> {
               child: const Text('Edit Profile'),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Handle logout button action
-                FirebaseAuth.instance.signOut();
-                user?.reload();
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.of(context).pushReplacementNamed('/');
               },
-              child: const Text('Logout'),
+              child: const Text('Sign Out'),
             ),
           ],
         ),
