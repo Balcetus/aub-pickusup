@@ -33,6 +33,7 @@ class _SignInPageState extends State<SignInPage> {
                 email: userEmail, password: userPassword);
 
         if (credentials.user?.emailVerified == true) {
+          Fluttertoast.showToast(msg: 'Signed in Successfully');
           Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(
               context, '/choose_type', (route) => false);

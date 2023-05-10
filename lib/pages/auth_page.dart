@@ -2,7 +2,6 @@ import 'package:aub_pickusup/pages/choose_type.dart';
 import 'package:aub_pickusup/pages/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthPage extends StatefulWidget {
@@ -42,22 +41,19 @@ class _AuthPageState extends State<AuthPage> {
                     return const CircularProgressIndicator();
                   } else if (userSnapshot.hasData &&
                       userSnapshot.data!.exists) {
-                    Fluttertoast.showToast(
-                      msg: 'Signed in Successfully',
-                    );
                     return const ChooseUserType();
                   } else {
                     FirebaseAuth.instance.signOut();
-                    return const SignInPage(); // Display the sign-in page
+                    return const SignInPage();
                   }
                 },
               );
             } else {
               FirebaseAuth.instance.signOut();
-              return const SignInPage(); // Display the sign-in page
+              return const SignInPage();
             }
           }
-          return const SignInPage(); // Display the sign-in page
+          return const SignInPage();
         },
       ),
     );

@@ -15,15 +15,23 @@ class MainScreenRider extends StatefulWidget {
 }
 
 class _MainScreenRiderState extends State<MainScreenRider> {
+  TextEditingController _searchController = TextEditingController();
   Future<LatLng>? _currentLocation;
   bool _isGoingToAUB =
       true; // Track whether the user is going to AUB or leaving AUB
   final Set<Marker> _markers = {};
+  bool _isExpanded = false;
 
   @override
   void initState() {
     super.initState();
     _currentLocation = _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<LatLng> _getCurrentLocation() async {
@@ -99,6 +107,12 @@ class _MainScreenRiderState extends State<MainScreenRider> {
     _updateMapMarkers();
   }
 
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<LatLng>(
@@ -119,11 +133,7 @@ class _MainScreenRiderState extends State<MainScreenRider> {
                         children: [
                           DropdownButton<bool>(
                             underline: Container(
-                              height: 2,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Colors.white,
-                              ),
+                              height: 0,
                             ),
                             dropdownColor: Colors.black,
                             enableFeedback: true,
@@ -211,6 +221,51 @@ class _MainScreenRiderState extends State<MainScreenRider> {
                         zoom: 16.0,
                       ),
                       markers: _markers,
+                    ),
+                  ),
+                  Visibility(
+                    visible:
+                        !_isGoingToAUB, // Show Search button only when leaving AUB
+                    child: Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: _toggleExpanded,
+                            child: Container(
+                              color: Colors.grey[300],
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.search),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _searchController,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Search...',
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (_isExpanded)
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: 10,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text('Item $index'),
+                                  );
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
