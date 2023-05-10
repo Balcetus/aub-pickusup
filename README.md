@@ -1,6 +1,6 @@
-# aub_pickusup
+# AUB PickUsUp
 
-A new Flutter project.
+A carpooling app made for AUB students
 
 ## Getting Started
 
