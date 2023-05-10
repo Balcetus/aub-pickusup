@@ -27,5 +27,5 @@
             "password": "groundhogDay.12"
         }
     ],
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

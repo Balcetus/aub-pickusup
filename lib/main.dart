@@ -1,8 +1,12 @@
 import 'package:aub_pickusup/pages/auth_page.dart';
+import 'package:aub_pickusup/pages/choose_type.dart';
 import 'package:aub_pickusup/pages/home_page.dart';
+import 'package:aub_pickusup/pages/main_screen_rider.dart';
+import 'package:aub_pickusup/pages/profile_page.dart';
 import 'package:aub_pickusup/pages/register_page.dart';
 import 'package:aub_pickusup/pages/sign_in_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -11,7 +15,9 @@ const Color aubRed = Color.fromRGBO(106, 19, 44, 1);
 const Color aubGrey = Color.fromRGBO(197, 197, 197, 1);
 const Color aubBlue = Color.fromRGBO(58, 136, 198, 1);
 final FirebaseFirestore db = FirebaseFirestore.instance;
-final CollectionReference userDataRef = db.collection('users');
+final CollectionReference userCollectRef = db.collection('users');
+User? user = FirebaseAuth.instance.currentUser;
+String? userDisplayName = user!.displayName;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,8 +62,11 @@ class AUBPickUsUp extends StatelessWidget {
       routes: {
         '/': (context) => const AuthPage(),
         '/home': (context) => HomePage(),
+        '/chooserole': (context) => const ChooseUserType(),
         '/signin': (context) => const SignInPage(),
         '/register': (context) => const RegisterPage(),
+        '/rider': (context) => const MainScreenRider(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }

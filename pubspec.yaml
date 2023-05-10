@@ -40,8 +40,11 @@ dependencies:
   firebase_auth: ^4.3.0
   loading_animation_widget: ^1.2.0+4
   fluttertoast: ^8.2.1
-  cloud_firestore: ^4.5.0
+  cloud_firestore: ^4.6.0
   flutter_native_splash: ^2.2.19
+  google_maps_flutter: ^2.2.6
+  geolocator: ^9.0.2
+  permission_handler: ^10.2.0
 
 flutter_native_splash:
   android: true

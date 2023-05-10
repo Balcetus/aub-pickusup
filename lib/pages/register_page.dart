@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'package:aub_pickusup/components/my_textfield.dart';
 import 'package:aub_pickusup/main.dart';
@@ -247,12 +248,13 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
-        final userDoc = userDataRef.doc(currentUser.uid);
-        final userSubcollection = userDoc.collection('details');
-        await userSubcollection.add({
+        currentUser.updateDisplayName(fullname.trim());
+        final userUid = currentUser.uid;
+        await userCollectRef.doc(userUid).set({
           'fullname': fullname.trim(),
           'email': email.trim(),
           'phone': phone.trim(),
+          'role': 'N/A',
         });
       } else {
         throw Exception('Current user not found');
@@ -297,7 +299,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         // Wait for Firestore operation to complete before navigating to home screen
         await Navigator.of(navigator.context)
-            .pushNamedAndRemoveUntil('/home', (route) => false);
+            .pushNamedAndRemoveUntil('/chooserole', (route) => false);
       } else {
         Fluttertoast.showToast(msg: 'New user has not been created');
       }
@@ -365,18 +367,19 @@ class _VerifyEmailDialogState extends State<VerifyEmailDialog> {
             size: 60,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(60, 40, 60, 0),
+            padding: const EdgeInsets.fromLTRB(60, 20, 60, 0),
             child: Column(
               children: [
                 const Text(
-                  'A verification email has been sent to',
+                  'A verification email has been sent to:',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 18,
                     decoration: TextDecoration.none,
                     fontWeight: FontWeight.w100,
                     letterSpacing: 1,
                     height: 2,
+                    fontFamily: 'Jost',
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -384,9 +387,10 @@ class _VerifyEmailDialogState extends State<VerifyEmailDialog> {
                   '$userEmailText',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 22,
                     decoration: TextDecoration.none,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'Jost',
                     letterSpacing: 1,
                     height: 2,
                   ),
