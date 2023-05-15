@@ -55,6 +55,7 @@ class AUBPickUsUp extends StatelessWidget {
         outline: aubRed,
       ),
     );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeData,
