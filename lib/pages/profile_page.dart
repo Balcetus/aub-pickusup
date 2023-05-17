@@ -211,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               );
             } else {
-              return Text('Failed to load user data');
+              return const Text('Failed to load user data');
             }
           },
         ),

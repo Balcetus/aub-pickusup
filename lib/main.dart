@@ -1,7 +1,6 @@
 import 'package:aub_pickusup/pages/auth_page.dart';
 import 'package:aub_pickusup/pages/choose_type.dart';
 import 'package:aub_pickusup/pages/edit_profile_page.dart';
-import 'package:aub_pickusup/pages/home_page.dart';
 import 'package:aub_pickusup/pages/main_screen_rider.dart';
 import 'package:aub_pickusup/pages/profile_page.dart';
 import 'package:aub_pickusup/pages/register_page.dart';
@@ -64,7 +63,6 @@ class AUBPickUsUp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const AuthPage(),
-        '/home': (context) => HomePage(),
         '/chooserole': (context) => const ChooseUserType(),
         '/signin': (context) => const SignInPage(),
         '/register': (context) => const RegisterPage(),

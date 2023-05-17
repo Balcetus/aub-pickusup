@@ -67,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '645186470981',
     projectId: 'aub-pickusup',
     storageBucket: 'aub-pickusup.appspot.com',
-    iosClientId: '645186470981-5nofdlrotprplr9h8qdkdrfuo36i85k8.apps.googleusercontent.com',
+    iosClientId:
+        '645186470981-5nofdlrotprplr9h8qdkdrfuo36i85k8.apps.googleusercontent.com',
     iosBundleId: 'com.example.aubPickusup',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '645186470981',
     projectId: 'aub-pickusup',
     storageBucket: 'aub-pickusup.appspot.com',
-    iosClientId: '645186470981-5nofdlrotprplr9h8qdkdrfuo36i85k8.apps.googleusercontent.com',
+    iosClientId:
+        '645186470981-5nofdlrotprplr9h8qdkdrfuo36i85k8.apps.googleusercontent.com',
     iosBundleId: 'com.example.aubPickusup',
   );
 }
