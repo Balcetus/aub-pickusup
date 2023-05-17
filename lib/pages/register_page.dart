@@ -36,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     MyTextFormField passwordTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.text,
       obscureText: true,
       specIcon: Icons.password_rounded,
@@ -53,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     MyTextFormField emailTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.emailAddress,
       obscureText: false,
       specIcon: Icons.email_rounded,
@@ -69,6 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     MyTextFormField fullnameTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.name,
       obscureText: false,
       specIcon: Icons.person_2_rounded,
@@ -87,6 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     MyTextFormField phoneTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.phone,
       obscureText: false,
       specIcon: Icons.phone_rounded,
@@ -107,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: null,
-        elevation: 5,
+        elevation: 0,
         centerTitle: true,
         backgroundColor: aubRed,
         toolbarHeight: 150,
@@ -256,6 +260,8 @@ class _RegisterPageState extends State<RegisterPage> {
           'email': email.trim(),
           'phone': phone.trim(),
           'role': 'N/A',
+          'bio': 'N/A',
+          'photoUrl': 'N/A',
         });
       } else {
         throw Exception('Current user not found');

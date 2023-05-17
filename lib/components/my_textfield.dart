@@ -8,6 +8,7 @@ class MyTextFormField extends StatelessWidget {
   final TextEditingController controller1;
   final TextInputType? inputType;
   final FormFieldValidator validatorCustom;
+  final EdgeInsetsGeometry formPadding;
 
   const MyTextFormField(
       {super.key,
@@ -16,12 +17,13 @@ class MyTextFormField extends StatelessWidget {
       required this.controller1,
       required this.labelText,
       this.inputType,
-      required this.validatorCustom});
+      required this.validatorCustom,
+      required this.formPadding});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
+      padding: formPadding,
       child: TextFormField(
         controller: controller1,
         obscureText: obscureText,
@@ -43,7 +45,7 @@ class MyTextFormField extends StatelessWidget {
           ),
           errorBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(8),
+              Radius.circular(12),
             ),
             borderSide: BorderSide(
               width: 2,
@@ -52,7 +54,7 @@ class MyTextFormField extends StatelessWidget {
           ),
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(8),
+              Radius.circular(12),
             ),
             borderSide: BorderSide(width: 0),
           ),

@@ -68,6 +68,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     MyTextFormField passwordTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.text,
       obscureText: true,
       specIcon: Icons.password_rounded,
@@ -85,6 +86,7 @@ class _SignInPageState extends State<SignInPage> {
     );
 
     MyTextFormField emailTextField = MyTextFormField(
+      formPadding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
       inputType: TextInputType.emailAddress,
       obscureText: false,
       specIcon: Icons.email_rounded,
@@ -106,7 +108,7 @@ class _SignInPageState extends State<SignInPage> {
         leading: null,
         centerTitle: true,
         backgroundColor: aubRed,
-        elevation: 5,
+        elevation: 0,
         toolbarHeight: 150,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(

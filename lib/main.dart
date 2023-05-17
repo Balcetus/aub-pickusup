@@ -1,5 +1,6 @@
 import 'package:aub_pickusup/pages/auth_page.dart';
 import 'package:aub_pickusup/pages/choose_type.dart';
+import 'package:aub_pickusup/pages/edit_profile_page.dart';
 import 'package:aub_pickusup/pages/home_page.dart';
 import 'package:aub_pickusup/pages/main_screen_rider.dart';
 import 'package:aub_pickusup/pages/profile_page.dart';
@@ -12,7 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 const Color aubRed = Color.fromRGBO(106, 19, 44, 1);
-const Color aubGrey = Color.fromRGBO(197, 197, 197, 1);
+const Color aubGrey = Color.fromRGBO(120, 120, 120, 1);
 const Color aubBlue = Color.fromRGBO(58, 136, 198, 1);
 
 final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -69,6 +70,7 @@ class AUBPickUsUp extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/rider': (context) => const MainScreenRider(),
         '/profile': (context) => const ProfilePage(),
+        '/editprofile': (context) => const ProfileEditPage(),
       },
     );
   }

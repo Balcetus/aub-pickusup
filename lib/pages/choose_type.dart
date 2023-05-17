@@ -38,7 +38,7 @@ class ChooseUserType extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: null,
-        elevation: 5,
+        elevation: 0,
         centerTitle: true,
         backgroundColor: aubRed,
         toolbarHeight: 150,

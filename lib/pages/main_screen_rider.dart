@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:aub_pickusup/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,6 +40,7 @@ class _MainScreenRiderState extends State<MainScreenRider> {
   @override
   void initState() {
     super.initState();
+    FirebaseAuth.instance.currentUser!.reload();
     _currentLocation = getCurrentLocation();
   }
 
@@ -397,6 +399,7 @@ class _MainScreenRiderState extends State<MainScreenRider> {
                         selectedRideData: _selectedRideData,
                         onCancelPressed: () {
                           cancelRide();
+                          _addAUBMarker();
                         },
                       ),
                     ),
@@ -507,32 +510,31 @@ class _MainScreenRiderState extends State<MainScreenRider> {
                                       ],
                                     ),
                             ),
-                            InkResponse(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/profile');
-                              },
-                              highlightShape: BoxShape
-                                  .circle, // Set the splash shape to CircleBorder
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    width: 3.0,
-                                    color: Colors.white,
-                                  ),
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  width: 3.0,
+                                  color: Colors.white,
                                 ),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  foregroundImage: const AssetImage(
-                                    'assets/logo.png',
-                                  ),
-                                  radius: 35,
-                                  onForegroundImageError:
-                                      (exception, stackTrace) {
-                                    Fluttertoast.showToast(
-                                      msg:
-                                          'Error loading profile picture: $exception',
-                                    );
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: user!.photoURL != null
+                                      ? Image.network(user!.photoURL!)
+                                          .image // Use the image from the user's profile picture if it exists
+                                      : const AssetImage('assets/logo.png'),
+                                ),
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  customBorder: const CircleBorder(),
+                                  splashColor: aubRed.withOpacity(0.8),
+                                  highlightColor: Colors.white.withOpacity(0.2),
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/profile');
                                   },
                                 ),
                               ),
